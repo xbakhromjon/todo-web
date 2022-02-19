@@ -1,0 +1,19 @@
+remember:
+  me:
+    key: "Fasadas231231@#$%^&asadassv324234352353adasda!@#$%^"
+    expiry: 30
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/todo
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: "0609"
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    open-in-view: false
+  banner:
+    location: banner/banner.txt
+
