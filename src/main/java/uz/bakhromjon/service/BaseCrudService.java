@@ -14,10 +14,11 @@ import java.io.Serializable;
 public interface BaseCrudService<
         CD extends BaseDto,
         UD extends BaseAbstractDto,
-        K extends Serializable>{
+        K extends Serializable> {
     K create(CD cd);
 
-    Void delete(K k);
+    void delete(K k);
 
-    Void update(UD ud);
+    void update(UD ud);
+
 }

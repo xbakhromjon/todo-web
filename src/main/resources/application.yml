@@ -1,7 +1,8 @@
 remember:
   me:
-    key: "Fasadas231231@#$%^&asadassv324234352353adasda!@#$%^"
-    expiry: 30
+    token:
+      key: "Fasadas231231@#$%^&asadassv324234352353adasda!@#$%^"
+      expiry: 30
 
 spring:
   datasource:
@@ -11,7 +12,7 @@ spring:
     password: "0609"
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     open-in-view: false
   banner:

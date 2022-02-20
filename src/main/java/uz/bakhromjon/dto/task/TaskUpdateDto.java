@@ -12,12 +12,15 @@ import java.util.Date;
  */
 @Setter
 @Getter
-
 public class TaskUpdateDto extends BaseAbstractDto {
     private String title;
     private Date deadline;
     private String description;
     private boolean completed;
+
+    public boolean isCompleted() {
+        return completed;
+    }
 
     @Builder
     public TaskUpdateDto(Long id, String title, Date deadline, String description, boolean completed) {

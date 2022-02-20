@@ -1,7 +1,9 @@
 package uz.bakhromjon.config.security;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.annotation.PostConstruct;
@@ -19,10 +22,10 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 @EnableWebSecurity
+
 @EnableGlobalMethodSecurity(
         prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true
+        securedEnabled = true
 )
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
@@ -33,19 +36,19 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         this.applicationUserDetailService = applicationUserDetailService;
     }
 
-    private final String[] WHITE_LIST = new String[]{"/home", "/", "/about", "/contact"};
+    private final String[] WHITE_LIST = new String[]{"/home/", "/", "/about/", "/contact/", "/auth/register/"};
 
-    @Value(value = "${remember.me.key}")
-    private String rememberMeKey;
+    @Value(value = "${remember.me.token.key}")
+    private String rememberMeTokenKey;
 
-    @Value(value = "${remember.me.expiry}")
-    private int rememberMeExpiry;
+    @Value(value = "${remember.me.token.expiry}")
+    private int rememberMeTokenExpiry;
 
-    private int rememberMeExpirySeconds;
+    private int rememberMeTokenExpiryInSeconds;
 
     @PostConstruct
-    public void init() throws Exception {
-        this.rememberMeExpirySeconds = (int) TimeUnit.DAYS.toSeconds(rememberMeExpiry);
+    public void init() {
+        this.rememberMeTokenExpiryInSeconds = (int) TimeUnit.DAYS.toSeconds(rememberMeTokenExpiry);
     }
 
     @Override
@@ -54,10 +57,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer
                                 .maximumSessions(1)
-                                .maxSessionsPreventsLogin(false))
+                                .maxSessionsPreventsLogin(false)
+                )
                 .authorizeRequests(expressionInterceptUrlRegistry ->
                         expressionInterceptUrlRegistry
-                                .antMatchers(WHITE_LIST)
+                                .antMatchers(HttpMethod.GET, WHITE_LIST)
+                                .permitAll()
+                                .antMatchers(HttpMethod.POST, "/auth/register/")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
@@ -68,19 +74,21 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                                 .loginProcessingUrl("/auth/login/")
                                 .usernameParameter("username")
                                 .passwordParameter("password")
-                                .defaultSuccessUrl("/home", true))
+                                .successHandler(successHandler()))
+                .rememberMe(httpSecurityRememberMeConfigurer ->
+                        httpSecurityRememberMeConfigurer
+                                .tokenValiditySeconds(rememberMeTokenExpiryInSeconds)
+                                .alwaysRemember(false)
+                                .key(rememberMeTokenKey)
+                                .rememberMeParameter("remember-me"))
                 .logout(httpSecurityLogoutConfigurer ->
                         httpSecurityLogoutConfigurer
                                 .logoutUrl("/auth/logout/")
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout/  ", "POST"))
-                                .invalidateHttpSession(true)
                                 .clearAuthentication(true)
-                                .deleteCookies("JSESSION", "remember-me"))
-                .rememberMe(httpSecurityRememberMeConfigurer ->
-                        httpSecurityRememberMeConfigurer
-                                .rememberMeParameter("remember-me")
-                                .tokenValiditySeconds(rememberMeExpirySeconds)
-                                .key(rememberMeKey));
+                                .invalidateHttpSession(true)
+                                .deleteCookies("JSESSION", "remember-me")
+                                .logoutSuccessUrl("/auth/login/"));
     }
 
     @Override
@@ -94,6 +102,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(applicationUserDetailService);
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public SavedRequestAwareAuthenticationSuccessHandler successHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        successHandler.setTargetUrlParameter("/user/profile/");
+        return successHandler;
     }
 
 }
