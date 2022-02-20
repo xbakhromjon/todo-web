@@ -1,7 +1,8 @@
 remember:
   me:
-    key: "Fasadas231231@#$%^&asadassv324234352353adasda!@#$%^"
-    expiry: 30
+    token:
+      key: "Fasadas231231@#$%^&asadassv324234352353adasda!@#$%^"
+      expiry: 30
 
 spring:
   datasource:

@@ -22,6 +22,7 @@ public class AuthUser extends Auditable {
     private String password;
     private String email;
     private String avatar;
+    private byte active = 1;
 
     @OneToMany(mappedBy = "user")
     private List<Task> task;
@@ -30,7 +31,7 @@ public class AuthUser extends Auditable {
     private Role role;
 
     @Builder
-    public AuthUser(Long id, Date createdAt, Long createdBy, Date updatedAt, Long updatedBy, Long id1, String username, String password, String email, String avatar, List<Task> task) {
+    public AuthUser(Long id, Date createdAt, Long createdBy, Date updatedAt, Long updatedBy, String username, String password, String email, String avatar, List<Task> task) {
         super(id, createdAt, createdBy, updatedAt, updatedBy);
         this.username = username;
         this.password = password;
@@ -40,5 +41,6 @@ public class AuthUser extends Auditable {
     }
 
     public AuthUser() {
+        super();
     }
 }

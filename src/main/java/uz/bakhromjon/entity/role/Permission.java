@@ -12,7 +12,6 @@ import javax.persistence.*;
  */
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Permission {
@@ -21,4 +20,13 @@ public class Permission {
     private Long id;
     private String code;
     private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public Permission(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
 }

@@ -19,12 +19,14 @@ public class ApplicationUserDetailService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AuthUser authUser = userRepository.findByUsername(username);
+        AuthUser authUser = userRepository.findAuthUserByUsername(username);
         if (authUser == null) {
-            throw new UsernameNotFoundException("User Not Found");
+            throw new UsernameNotFoundException("User not found");
         }
+
         return User.builder()
                 .username(authUser.getUsername())
                 .password(authUser.getPassword())
