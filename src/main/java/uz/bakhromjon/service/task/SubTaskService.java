@@ -1,6 +1,7 @@
 package uz.bakhromjon.service.task;
 
 import org.mapstruct.Mapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.Mapping;
 import uz.bakhromjon.criteria.SubTaskCriteria;
@@ -16,6 +17,7 @@ import uz.bakhromjon.service.BaseAbstractService;
 import uz.bakhromjon.service.BaseCrudService;
 import uz.bakhromjon.service.BaseShowService;
 
+import javax.annotation.PreDestroy;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +34,7 @@ public class SubTaskService extends BaseAbstractService<SubTaskRepository, SubTa
     }
 
 
+    @PreAuthorize("hasAuthority('sub_task_create')")
     @Override
     public Long create(SubTaskCreateDto taskCreateDto) {
         SubTask task = mapper.fromCreateDto(taskCreateDto);
@@ -40,12 +43,14 @@ public class SubTaskService extends BaseAbstractService<SubTaskRepository, SubTa
         return task.getId();
     }
 
+    @PreAuthorize("hasAuthority('sub_task_delete')")
     @Override
     public void delete(Long id) {
         repository.findById(id).orElseThrow(() -> new NotFoundException("Not found"));
         repository.delete(id);
     }
 
+    @PreAuthorize("hasAuthority('sub_task_update')")
     @Override
     public void update(SubTaskUpdateDto subTaskUpdateDto) {
         SubTask task = repository.findById(subTaskUpdateDto.getId()).orElseThrow(() -> new NotFoundException("Not Found"));
@@ -54,7 +59,7 @@ public class SubTaskService extends BaseAbstractService<SubTaskRepository, SubTa
         String description = (subTaskUpdateDto.getDescription().isBlank()) ? task.getDescription() : subTaskUpdateDto.getDescription();
         boolean completed = (subTaskUpdateDto.isCompleted()) ? task.isCompleted() : subTaskUpdateDto.isCompleted();
 
-        repository.update(title, deadline, description, completed);
+        repository.update(task.getId(), title, deadline, description, completed);
     }
 
     @Override
@@ -63,6 +68,7 @@ public class SubTaskService extends BaseAbstractService<SubTaskRepository, SubTa
         return mapper.toDto(all);
     }
 
+    @PreAuthorize("hasAuthority('sub_task_get')")
     @Override
     public SubTaskDto get(Long id) {
         SubTask task = repository.findById(id).orElseThrow(() -> new NotFoundException("Not found"));

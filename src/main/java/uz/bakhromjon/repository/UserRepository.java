@@ -1,6 +1,5 @@
 package uz.bakhromjon.repository;
 
-import net.bytebuddy.agent.builder.AgentBuilder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,11 +17,11 @@ public interface UserRepository extends JpaRepository<AuthUser, Long> {
     @Query(value = "update auth_user set deleted = 1, deleted_at = current_timestamp where id = ?1", nativeQuery = true)
     boolean delete(Long id);
 
-    @Query(value = "update auth_user set username = ?1, email = ?2, avatar = ?3, updated_at = current_timestamp", nativeQuery = true)
-    void update(String username, String email, String avatar);
+    @Query(value = "update auth_user set username = ?2, email = ?3, avatar = ?4, updated_at = current_timestamp where id = ?1", nativeQuery = true)
+    void update(Long id, String username, String email, String avatar);
 
 
-    @Query(value = "select * from where deleted <> 1", nativeQuery = true)
+    @Query(value = "select * from auth_user where deleted <> 1", nativeQuery = true)
     List<AuthUser> findAllByDeleted();
 
 }

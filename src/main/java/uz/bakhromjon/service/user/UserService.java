@@ -1,5 +1,6 @@
 package uz.bakhromjon.service.user;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uz.bakhromjon.criteria.UserCriteria;
 import uz.bakhromjon.dto.user.UserCreateDto;
@@ -32,16 +33,16 @@ public class UserService extends BaseAbstractService<UserRepository, UserMapper>
 
     @Override
     public void delete(Long aLong) {
-
     }
 
+    @PreAuthorize("hasAuthority('user_update')")
     @Override
     public void update(UserUpdateDto updateDto) {
         AuthUser authUser = repository.findById(updateDto.getId()).orElseThrow(() -> new UserNotFoundException("User Not found"));
         String username = (updateDto.getUsername().isBlank()) ? authUser.getUsername() : updateDto.getUsername();
         String email = (updateDto.getEmail().isBlank()) ? authUser.getEmail() : updateDto.getEmail();
         String avatar = (updateDto.getAvatar().isBlank()) ? authUser.getAvatar() : updateDto.getAvatar();
-        repository.update(username, email, avatar);
+        repository.update(authUser.getId(), username, email, avatar);
     }
 
     @Override
@@ -50,6 +51,7 @@ public class UserService extends BaseAbstractService<UserRepository, UserMapper>
         return mapper.toDto(all);
     }
 
+    @PreAuthorize("hasAuthority('user_get')")
     @Override
     public UserDto get(Long id) {
         AuthUser authUser = repository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));

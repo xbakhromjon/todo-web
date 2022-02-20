@@ -1,14 +1,13 @@
 package uz.bakhromjon.controller.auth;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import uz.bakhromjon.controller.BaseAbstractController;
 import uz.bakhromjon.dto.user.UserCreateDto;
 import uz.bakhromjon.service.auth.AuthUserService;
+
+import java.security.Principal;
 
 /**
  * @author Bakhromjon Fri, 9:47 PM 2/18/2022
@@ -41,8 +40,9 @@ public class AuthController extends BaseAbstractController<AuthUserService> {
     @PostMapping("register/")
     public String registration(@ModelAttribute UserCreateDto userCreateDto) {
         service.registration(userCreateDto);
-        return "redirect:/auth/verify_code/";
+        return "redirect:/home";
     }
+
 
     // TODO: 2/20/2022 add verify
 //    @GetMapping("verify_code/")

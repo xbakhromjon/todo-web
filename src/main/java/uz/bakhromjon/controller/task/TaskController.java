@@ -1,5 +1,6 @@
 package uz.bakhromjon.controller.task;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,19 +21,23 @@ public class TaskController extends BaseAbstractController<TaskService> {
         super(service);
     }
 
-    @GetMapping("create")
+    @PreAuthorize("hasAuthority('task_create')")
+    @GetMapping("create/")
     public String createPage() {
         return "/task/create";
     }
 
-    @PostMapping("create")
+
+    @PreAuthorize("hasAuthority('task_create')")
+    @PostMapping("create/")
     public String create(@ModelAttribute TaskCreateDto taskCreateDto) {
         Long id = service.create(taskCreateDto);
-        return "/profile";
+        return "/user/profile";
     }
 
 
-    @GetMapping("delete/{id}")
+    @PreAuthorize("hasAuthority('task_delete')")
+    @GetMapping("delete/{id}/")
     public String deletePage(@PathVariable Long id, Model model) {
         service.get(id);
         model.addAttribute("id", id);
@@ -40,27 +45,30 @@ public class TaskController extends BaseAbstractController<TaskService> {
     }
 
 
-    @PostMapping("delete/{id}")
+    @PreAuthorize("hasAuthority('task_delete')")
+    @PostMapping("delete/{id}/")
     public String delete(@PathVariable Long id) {
         service.delete(id);
         return "redirect:/user/profile/";
     }
 
-    @GetMapping("update/{id}")
+    @PreAuthorize("hasAuthority('task_update')")
+    @GetMapping("update/{id}/")
     public String updatePage(@PathVariable Long id, Model model) {
         TaskDto taskDto = service.get(id);
         model.addAttribute("task", taskDto);
         return "/task/update";
     }
 
-
-    @PostMapping("update/{id}")
+    @PreAuthorize("hasAuthority('task_update')")
+    @PostMapping("update/{id}/")
     public String update(@PathVariable Long id, @ModelAttribute TaskUpdateDto taskUpdateDto) {
         service.update(taskUpdateDto);
         return "redirect:/user/profile/";
     }
 
-    @GetMapping("task_info/{id}")
+    @PreAuthorize("hasAuthority('task_info')")
+    @GetMapping("task_info/{id}/")
     public String taskPage(@PathVariable Long id, Model model) {
         TaskDto taskDto = service.get(id);
         model.addAttribute("task", taskDto);

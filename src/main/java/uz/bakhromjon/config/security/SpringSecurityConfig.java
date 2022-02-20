@@ -1,7 +1,7 @@
 package uz.bakhromjon.config.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -10,13 +10,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,7 +27,6 @@ import java.util.concurrent.TimeUnit;
         prePostEnabled = true,
         securedEnabled = true
 )
-@Transactional
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationUserDetailService applicationUserDetailService;
@@ -77,7 +74,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                                 .loginProcessingUrl("/auth/login/")
                                 .usernameParameter("username")
                                 .passwordParameter("password")
-                                .defaultSuccessUrl("/home/", true))
+                                .successHandler(successHandler()))
                 .rememberMe(httpSecurityRememberMeConfigurer ->
                         httpSecurityRememberMeConfigurer
                                 .tokenValiditySeconds(rememberMeTokenExpiryInSeconds)
@@ -106,4 +103,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         daoAuthenticationProvider.setUserDetailsService(applicationUserDetailService);
         return daoAuthenticationProvider;
     }
+
+    @Bean
+    public SavedRequestAwareAuthenticationSuccessHandler successHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        successHandler.setTargetUrlParameter("/user/profile/");
+        return successHandler;
+    }
+
 }

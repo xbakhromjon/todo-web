@@ -52,7 +52,7 @@ public class TaskService extends BaseAbstractService<TaskRepository, TaskMapper>
         String description = (taskUpdateDto.getDescription().isBlank()) ? task.getDescription() : taskUpdateDto.getDescription();
         boolean completed = (taskUpdateDto.isCompleted()) ? task.isCompleted() : taskUpdateDto.isCompleted();
 
-        repository.update(title, deadline, description, completed);
+        repository.update(task.getId(), title, deadline, description, completed);
     }
 
     @Override
@@ -65,5 +65,11 @@ public class TaskService extends BaseAbstractService<TaskRepository, TaskMapper>
     public TaskDto get(Long id) {
         Task task = repository.findById(id).orElseThrow(() -> new NotFoundException("Not found"));
         return mapper.toDto(task);
+    }
+
+    public List<TaskDto> list(Long userId) {
+        List<Task> userTask = repository.findByUserId(userId);
+        List<TaskDto> taskDtos = mapper.toDto(userTask);
+        return taskDtos;
     }
 }

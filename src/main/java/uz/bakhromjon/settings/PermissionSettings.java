@@ -12,38 +12,38 @@ import java.util.Set;
 public class PermissionSettings {
     public final static Set<Permission> defaultAdminAuthorities
             = Sets.newHashSet(
-            new Permission("CREATE_ADMIN", "create_admin"),
-            new Permission("delete_ADMIN", "delete_admin"),
-            new Permission("update_ADMIN", "update_admin"),
-            new Permission("get_ADMIN", "get_admin"),
-            new Permission("CREATE_user", "create_user"),
-            new Permission("delete_user", "delete_user"),
-            new Permission("get_user", "get_user"),
-            new Permission("update_user", "update_user"),
-            new Permission("create_task", "create_task"),
-            new Permission("delete_task", "delete_task"),
-            new Permission("update_task", "update_task"),
-            new Permission("get_task", "get_task"),
-            new Permission("create_sub_task", "create_sub_task"),
-            new Permission("delete_sub_task", "delete_sub_task"),
-            new Permission("update_sub_task", "update_sub_task"),
-            new Permission("get_sub_task", "get_sub_task")
+            new Permission("ADMIN_CREATE", "admin_create"),
+            new Permission("ADMIN_DELETE", "admin_delete"),
+            new Permission("ADMIN_UPDATE", "admin_update"),
+            new Permission("ADMIN_GET", "admin_get"),
+            new Permission("CREATE_USER", "create_user"),
+            new Permission("USER_DELETE", "user_delete"),
+            new Permission("USER_GET", "user_get"),
+            new Permission("USER_UPDATE", "user_update"),
+            new Permission("TASK_CREATE", "task_create"),
+            new Permission("TASK_DELETE", "task_delete"),
+            new Permission("TASK_UPDATE", "task_update"),
+            new Permission("TASK_GET", "task_get"),
+            new Permission("SUB_TASK_CREATE", "sub_task_create"),
+            new Permission("SUB_TASK_DELETE", "sub_task_delete"),
+            new Permission("SUB_TASK_UPDATE", "sub_task_update"),
+            new Permission("SUB_TASK_GET", "sub_task_get")
     );
     public final static Role admin = new Role("ADMIN", "Admin", defaultAdminAuthorities);
 
     public final static Set<Permission> defaultUserAuthorities
             = Sets.newHashSet(
-            new Permission("delete_user", "delete_user"),
-            new Permission("get_user", "get_user"),
-            new Permission("update_user", "update_user"),
-            new Permission("create_task", "create_task"),
-            new Permission("delete_task", "delete_task"),
-            new Permission("update_task", "update_task"),
-            new Permission("get_task", "get_task"),
-            new Permission("create_sub_task", "create_sub_task"),
-            new Permission("delete_sub_task", "delete_sub_task"),
-            new Permission("update_sub_task", "update_sub_task"),
-            new Permission("get_sub_task", "get_sub_task")
+            new Permission("USER_DELETE", "user_delete"),
+            new Permission("USER_GET", "user_get"),
+            new Permission("USER_UPDATE", "user_update"),
+            new Permission("TASK_CREATE", "task_create"),
+            new Permission("TASK_DELETE", "task_delete"),
+            new Permission("TASK_UPDATE", "task_update"),
+            new Permission("TASK_GET", "task_get"),
+            new Permission("SUB_TASK_CREATE", "sub_task_create"),
+            new Permission("SUB_TASK_DELETE", "sub_task_delete"),
+            new Permission("SUB_TASK_UPDATE", "sub_task_update"),
+            new Permission("SUB_TASK_GET", "sub_task_get")
     );
     public final static Role user = new Role("USER", "user", defaultUserAuthorities);
 
